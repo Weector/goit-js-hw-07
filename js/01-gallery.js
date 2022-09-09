@@ -41,16 +41,13 @@ function selecetImage(e) {
   const instance = basicLightbox.create(imgMarkupCreate);
   instance.show();
 
-  document.onkeydown = function (evt) {
-    evt = evt || window.event;
-    let isEscape = false;
-    if ("key" in evt) {
-      isEscape = evt.code === "Escape" || evt.code === "Esc";
-    } else {
-      isEscape = evt.code === "Escape";
+  const whenModalIsOpen = document.querySelector(".gallery");
+
+  whenModalIsOpen.addEventListener("keydown", closeModal.bind(instance));
+  function closeModal(event) {
+    if (event.keyCode === 27) {
+      this.close();
     }
-    if (isEscape) {
-      instance.close();
-    }
-  };
+  }
+  whenModalIsOpen.removeEventListener("keydown", closeModal.bind(instance));
 }
