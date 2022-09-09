@@ -1,14 +1,13 @@
 import { galleryItems } from "./gallery-items.js";
 // Change code below this line
 
-const galleryEl = document.querySelector(".gallery");
+const galleryListEl = document.querySelector(".gallery");
+const galleryMarkup = createGalleryImageMarkup();
 
-const galleryMarkup = createGalleryImageMarkup(galleryEl);
+galleryListEl.insertAdjacentHTML("beforeend", galleryMarkup);
+galleryListEl.addEventListener("click", selecetImage);
 
-galleryEl.insertAdjacentHTML("beforeend", galleryMarkup);
-galleryEl.addEventListener("click", selecetImage);
-
-function createGalleryImageMarkup(items) {
+function createGalleryImageMarkup() {
   return galleryItems
     .map(({ preview, original, description }) => {
       return `
@@ -21,34 +20,37 @@ function createGalleryImageMarkup(items) {
             alt="${description}"
             />
         </a>
-    </div> 
+    </div>
 `;
     })
     .join("");
 }
 
-function createBigImageMarkup({ description, url }) {
-  return `
-  <img src="${url}" alt="${description}" >
-  `;
-}
-
 function selecetImage(e) {
   e.preventDefault();
 
-  const galleryItem = e.target.closest(".gallery__item");
-  if (!galleryItem) {
+  const galleryItemClick = e.target.closest(".gallery__item");
+  if (!galleryItemClick) {
     return;
   }
 
-  const img = galleryItem.querySelector("img");
+  const imgMarkupCreate = `
+  <img src="${e.target.dataset.source}" alt="${e.target.alt}" >
+  `;
 
-  const {
-    alt: description,
-    dataset: { source: url },
-  } = img;
-
-  const arg = { description, url };
-  const instance = basicLightbox.create(createBigImageMarkup(arg));
+  const instance = basicLightbox.create(imgMarkupCreate);
   instance.show();
+
+  document.onkeydown = function (evt) {
+    evt = evt || window.event;
+    let isEscape = false;
+    if ("key" in evt) {
+      isEscape = evt.code === "Escape" || evt.code === "Esc";
+    } else {
+      isEscape = evt.code === "Escape";
+    }
+    if (isEscape) {
+      instance.close();
+    }
+  };
 }
