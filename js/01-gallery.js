@@ -43,11 +43,12 @@ function selecetImage(e) {
 
   const whenModalIsOpen = document.querySelector(".gallery");
 
-  whenModalIsOpen.addEventListener("keydown", closeModal.bind(instance));
+  whenModalIsOpen.addEventListener("keydown", closeModal.bind(instance), {
+    once: true,
+  });
   function closeModal(event) {
     if (event.keyCode === 27) {
       this.close();
     }
   }
-  whenModalIsOpen.removeEventListener("keydown", closeModal.bind(instance));
 }
